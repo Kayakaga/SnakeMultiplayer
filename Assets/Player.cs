@@ -5,14 +5,18 @@ using System.Linq;
 
 public class Player : MonoBehaviour
 {
+    GameObject management;
+    SceneManagerr scManager;
     GameObject tailPrefab;
     bool ate;
     List<Transform> tail = new List<Transform>();
     Vector2 dir = Vector2.right;
     void Start()
     {
+        management = GameObject.Find("Management");
+        scManager = management.GetComponent<SceneManagerr>();
         tailPrefab = Resources.Load<GameObject>("Tail");
-        InvokeRepeating("Move", 0.3f, 0.3f);
+        InvokeRepeating("Move", 0.1f, 0.1f);
     }
     void Update()
     {
@@ -42,8 +46,12 @@ public class Player : MonoBehaviour
         }
         else
         {
-            //Die();
+            Die();
         }
+    }
+    void Die()
+    {
+        scManager.LoadScene("Die");
     }
     void Move()
     {
