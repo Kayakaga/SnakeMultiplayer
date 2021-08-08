@@ -5,10 +5,13 @@ using System.Linq;
 
 public class Player : MonoBehaviour
 {
+    GameObject tailPrefab;
+    bool ate;
     List<Transform> tail = new List<Transform>();
     Vector2 dir = Vector2.right;
     void Start()
     {
+        tailPrefab = Resources.Load<GameObject>("Tail");
         InvokeRepeating("Move", 0.3f, 0.3f);
     }
     void Update()
@@ -30,11 +33,30 @@ public class Player : MonoBehaviour
             dir = Vector2.up;
         }
     }
+    void OnTriggerEnter2D(Collider2D coll)
+    {
+        if(coll.CompareTag("Food"))
+        {
+            ate = true;
+            Destroy(coll.gameObject);
+        }
+        else
+        {
+            //Die();
+        }
+    }
     void Move()
     {
         Vector2 v = transform.position;
         transform.Translate(dir);
-        if(tail.Count > 0)
+        if(ate)
+        {
+            GameObject g = (GameObject)Instantiate(tailPrefab, v,
+             Quaternion.identity);
+             tail.Insert(0, g.transform);
+             ate = false;
+        }
+        else if(tail.Count > 0)
         {
             tail.Last().position = v;
             tail.Insert(0, tail.Last());
