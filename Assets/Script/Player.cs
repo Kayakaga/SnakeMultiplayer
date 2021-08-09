@@ -57,18 +57,22 @@ public class Player : NetworkBehaviour
         if(Input.GetKey(KeyCode.RightArrow))
         {
             dir = Vector2.right;
+            Debug.Log("Changed DIR");
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
             dir = Vector2.down;
+            Debug.Log("Changed DIR");
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             dir = Vector2.left;
+            Debug.Log("Changed DIR");
         }
         else if (Input.GetKey(KeyCode.UpArrow))
         {
             dir = Vector2.up;
+            Debug.Log("Changed DIR");
         }
     }
     [Command]
@@ -81,6 +85,7 @@ public class Player : NetworkBehaviour
     {
         Vector2 v = transform.position;
         transform.Translate(dir);
+        Debug.Log("Moving");
         if(ate)
         {
             GameObject g = (GameObject)Instantiate(tailPrefab, v,
