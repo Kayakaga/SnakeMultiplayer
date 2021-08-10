@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Die();
+            //Die();
         }
     }
     void Die()

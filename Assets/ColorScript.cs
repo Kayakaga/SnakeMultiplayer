@@ -14,7 +14,6 @@ public class ColorScript : NetworkBehaviour
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-        CmdCallColor();
         InvokeRepeating("CmdCallColor", 1f, 1f);
     }
     [ClientCallback]
