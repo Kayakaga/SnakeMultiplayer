@@ -133,6 +133,5 @@ public class PlayerOnline : NetworkBehaviour
     void CmdDestroy(GameObject obj)
     {
         NetworkServer.Destroy(obj);
-        
     }
 }
