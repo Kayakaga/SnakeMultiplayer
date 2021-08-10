@@ -61,23 +61,30 @@ public class PlayerOnline : NetworkBehaviour
         transform.Translate(dir);
         if(ate)
         {
-
-           // GameObject g = (GameObject)Instantiate(tailPrefab, v,
-            // Quaternion.identity);
              //Send the server a request to spawn tail
              CmdSpawnTail(v, Quaternion.identity);
              
         }
         else if(tail.Count > 0)
         {
-            tail.Last().position = v;
-            tail.Insert(0, tail.Last());
-            tail.RemoveAt(tail.Count-1);
+            //Send Tails' positions to server
+            CmdSendTailsPositions(v);
         }
         //Send Player's position to server
         CmdSendPlayerPosition(transform.position);
-        //Send Tails' positions to server
-        //CmdSendTailsPositions();
+    }
+    [Command]
+    void CmdSendTailsPositions(Vector2 pos)
+    {
+        tail.Last().position = pos;
+        tail.Insert(0, tail.Last());
+        tail.RemoveAt(tail.Count-1);
+        RpcSendTailsPositions(pos, tail.Last());
+    }
+    [ClientRpc]
+    void RpcSendTailsPositions(Vector2 pos, Transform tail)
+    {
+        tail.position = pos;
     }
     [Command]
     void CmdSpawnTail(Vector2 pos, Quaternion rot)
@@ -98,6 +105,7 @@ public class PlayerOnline : NetworkBehaviour
     [Command]
     void CmdSendPlayerPosition(Vector2 playerPos)
     {
+        transform.position = playerPos;
         //Send Player Position to Clients
         RpcSendPlayerPosition(playerPos);
     }
@@ -106,16 +114,24 @@ public class PlayerOnline : NetworkBehaviour
     {
         transform.position = playerPos;
     }
-        void OnTriggerEnter2D(Collider2D coll)
+    [ClientCallback]
+    void OnTriggerEnter2D(Collider2D coll)
     {
+        if(!isLocalPlayer) return;
         if(coll.CompareTag("Food"))
         {
             ate = true;
-            Destroy(coll.gameObject);
+            //Send a request to the server to destroy the food
+            CmdDestroy(coll.gameObject);
         }
         else
         {
             //Die();
         }
+    }
+    [Command]
+    void CmdDestroy(GameObject obj)
+    {
+        NetworkServer.Destroy(obj);
     }
 }
