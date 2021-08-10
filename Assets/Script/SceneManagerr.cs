@@ -6,36 +6,36 @@ using Mirror;
 
 public class SceneManagerr : MonoBehaviour
 {
-    NetworkManager networkManager;
+    //NetworkManager networkManager;
     void Start()
     {
-        networkManager = GameObject.Find("NetworkManager")
-        .GetComponent<NetworkManager>();
+       // networkManager = GameObject.Find("NetworkManager")
+       // .GetComponent<NetworkManager>();
     }
     void Update()
     {
-        if(SceneManager.GetActiveScene().name == "Die")
-        {
-           if (NetworkServer.active && NetworkClient.isConnected)
-            {
-                networkManager.StopHost();
-            }
-            else if (NetworkClient.isConnected)
-            {
-                networkManager.StopClient();
-            }
-        }
+        // if(SceneManager.GetActiveScene().name == "Die")
+        // {
+        //    if (NetworkServer.active && NetworkClient.isConnected)
+        //     {
+        //         networkManager.StopHost();
+        //     }
+        //     else if (NetworkClient.isConnected)
+        //     {
+        //         networkManager.StopClient();
+        //     }
+        // }
     }
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
-    public void HostGame()
-    {
-        networkManager.StartHost();
-    }
-    public void JoinGame()
-    {
-        networkManager.StartClient();
-    }
+    // public void HostGame()
+    // {
+    //     networkManager.StartHost();
+    // }
+    // public void JoinGame()
+    // {
+    //     networkManager.StartClient();
+    // }
 }

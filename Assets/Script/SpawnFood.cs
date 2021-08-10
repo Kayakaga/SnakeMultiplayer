@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 
-public class SpawnFood : NetworkBehaviour
+public class SpawnFood : MonoBehaviour
 {
     bool spawning = false;
     [SerializeField]float rightPoint, leftPoint, upPoint, downPoint;
@@ -18,9 +17,8 @@ public class SpawnFood : NetworkBehaviour
     void Spawn()
     {
         spawning = false;
-        GameObject instantiated = Instantiate(Resources.Load<GameObject>("Food"),
+        Instantiate(Resources.Load<GameObject>("Food"),
         new Vector3(Random.Range(leftPoint, rightPoint),
          Random.Range(downPoint, upPoint), 0f), Quaternion.identity);
-         NetworkServer.Spawn(instantiated);
     }
 }
