@@ -7,6 +7,7 @@ public class RoomPlayer : NetworkRoomPlayer
 {
     void Update()
     {
+        if(!isLocalPlayer) return;
         if(Input.GetKeyDown(KeyCode.Space))
         {
             if(readyToBegin)

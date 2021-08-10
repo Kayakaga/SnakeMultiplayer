@@ -6,6 +6,8 @@ using System.Linq;
 
 public class PlayerOnline : NetworkBehaviour
 {
+    [SyncVar]
+    int winner;
     float speed = 0.1f;
     GameObject management;
     SceneManagerr scManager;
@@ -18,6 +20,7 @@ public class PlayerOnline : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
+        Debug.Log("Player ID: "+netIdentity.netId);
         InvokeRepeating("Move", speed, speed);
     }
     void Start()
@@ -26,11 +29,27 @@ public class PlayerOnline : NetworkBehaviour
         scManager = management.GetComponent<SceneManagerr>();
         tailPrefab = Resources.Load<GameObject>("Tail");
     }
-    [ClientCallback]
+
+    [SyncVar]
+    int pnum;
+
     void Update()
     {
+        if(isServer)
+        {
+            pnum = NetworkServer.connections.Count;
+        }
+
         if(!isLocalPlayer) return;
-        ChangeDir();
+        if(pnum < 2)
+        {
+            management.GetComponent<SceneManagerr>()
+        .LoadScene("Winner");
+        }
+        if(isClient)
+        {
+            ChangeDir();
+        }
     }
     [ClientCallback]
     void ChangeDir()
@@ -126,8 +145,34 @@ public class PlayerOnline : NetworkBehaviour
         }
         else
         {
-            //Die();
+            Die();
         }
+    }
+    [ClientCallback]
+    void Die()
+    {
+        winner = GameObject.FindObjectOfType<NetworkRoomPlayer>()
+        .index + 1;
+        //Send winner to server
+        CmdSendWinner(winner);
+        Debug.Log("Winner: "+winner);
+        management.GetComponent<SceneManagerr>()
+        .LoadScene("Winner");
+    }
+    [Command]
+    void CmdSendWinner(int win)
+    {
+        winner = win;
+        TextScore.winner = win;
+        Debug.Log("Winner: "+winner);
+        //Send winner to clients
+        RpcSendWinner(winner);
+    }
+    [ClientRpc]
+    void RpcSendWinner(int win)
+    {
+        winner = win;
+        TextScore.winner = win;
     }
     [Command]
     void CmdDestroy(GameObject obj)
