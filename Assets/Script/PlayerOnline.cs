@@ -8,6 +8,8 @@ public class PlayerOnline : NetworkBehaviour
 {
     [SyncVar]
     int winner;
+    [SyncVar]
+    List<GameObject> players = new List<GameObject>();
     float speed = 0.1f;
     GameObject management;
     SceneManagerr scManager;
@@ -20,7 +22,6 @@ public class PlayerOnline : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
-        Debug.Log("Player ID: "+netIdentity.netId);
         InvokeRepeating("Move", speed, speed);
     }
     void Start()
@@ -29,7 +30,21 @@ public class PlayerOnline : NetworkBehaviour
         scManager = management.GetComponent<SceneManagerr>();
         tailPrefab = Resources.Load<GameObject>("Tail");
     }
-
+    [Command]
+    public void CmdAddPlayer(GameObject obj)
+    {
+        players.Add(obj);
+    }
+    [Command]
+    public void CmdRemovePlayer(GameObject obj)
+    {
+        players.Remove(obj);
+    }
+    public override void OnStopClient()
+    {
+        CmdRemovePlayer(gameObject);
+        base.OnStopClient();
+    }
     [SyncVar]
     int pnum;
 
